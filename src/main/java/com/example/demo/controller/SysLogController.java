@@ -42,7 +42,7 @@ public class SysLogController {
         SysLog sysLog = sysLogMapper.getById(id);
         System.out.println("==========> name:" + id);
 
-        return ApiResult.ok(sysLog);
+        return ApiResult.ok(sysLog);//
     }
 
     /**
