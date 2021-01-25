@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.NormalMapper">
+
+    <resultMap id="taskMap" type="com.example.demo.model.SysTask">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="word" jdbcType="VARCHAR" property="word" />
+        <result column="ext" jdbcType="VARCHAR" property="ext" />
+
+        <result column="assigner" jdbcType="INTEGER" property="assigner" />
+        <result column="assignee" jdbcType="INTEGER" property="assignee" />
+        <result column="assign_time" jdbcType="DATE" property="assignTime" />
+    </resultMap>
+
+    <select id="getById" resultType="com.example.demo.model.SysTask">
+        select * from sys_task where id=#{id}
+    </select>
+
+    <select id="getByMap" resultType="java.util.Map">
+        select * from sys_task where id=#{id}
+    </select>
+
+    <select id="getMyTask" resultType="com.example.demo.model.SysTask">
+        select * from sys_task where assignee=#{id} order by assign_time desc;
+    </select>
+</mapper>

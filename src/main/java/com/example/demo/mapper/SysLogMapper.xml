@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2019-2029 geekidea(https://github.com/geekidea)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.SysLogMapper">
+
+
+    <resultMap id="logMap" type="com.example.demo.model.SysLog" autoMapping="true">
+        <!-- column：主键在数据库中的列名 property：主键在pojo中的属性名 -->
+        <id property="id" jdbcType="INTEGER" column="id"/>
+        <result column="visitor" jdbcType="VARCHAR" property="visitor"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="level1_menu" jdbcType="VARCHAR" property="level1Menu"/>
+        <result column="level2_menu" jdbcType="VARCHAR" property="level2Menu"/>
+        <result column="level3_menu" jdbcType="VARCHAR" property="level3Menu"/>
+        <result column="message" jdbcType="VARCHAR" property="message"/>
+        <result column="api" jdbcType="VARCHAR" property="api"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="log_data" property="logData"
+                typeHandler="com.example.demo.mybatis.JsonTypeHandler"
+                javaType="com.alibaba.fastjson.JSONObject"/>
+    </resultMap>
+
+    <select id="getById" resultMap="logMap">
+        SELECT * FROM sys_log WHERE id = #{id};
+    </select>
+
+    <insert id="batchInsert" parameterType="com.example.demo.model.SysLog">
+        INSERT INTO sys_log (visitor, gmt_create,
+        level1_menu, level2_menu, level3_menu,
+        message, api, status,log_data)
+        VALUES
+        <foreach collection="list" item="record" separator=",">
+            (#{record.visitor}, #{record.gmtCreate},
+            #{record.level1Menu}, #{record.level2Menu},
+            #{record.level3Menu},
+            #{record.message}, #{record.api}, #{record.status},
+            <if test="record.logData == null">null</if>
+            <if test="record.logData != null">(#{record.logData})::jsonb </if>
+            )
+        </foreach>
+    </insert>
+    <update id="editById" parameterType="com.example.demo.model.SysLog">
+        update sys_log set
+        log_data=(#{bean.logData})::jsonb
+        where id=#{bean.id}
+    </update>
+
+</mapper>
